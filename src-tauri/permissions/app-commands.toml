@@ -7,6 +7,5 @@ commands.allow = [
   "install_appimage",
   "list_installed_apps",
   "remove_installed_app",
-  "fix_dock_grouping",
   "update_installed_app",
 ]

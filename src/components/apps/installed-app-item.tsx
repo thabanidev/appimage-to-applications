@@ -1,7 +1,6 @@
 "use client";
 
 import { EditAppDialog } from "@/components/apps/edit-app-dialog";
-import { FixDockDialog } from "@/components/apps/fix-dock-dialog";
 import { RemoveAppDialog } from "@/components/apps/remove-app-dialog";
 import { AppIconImage } from "@/components/shared/app-icon-image";
 import { Badge } from "@/components/ui/badge";
@@ -20,14 +19,12 @@ import type { InstalledApp } from "@/lib/tauri/types";
 interface InstalledAppItemProps {
   app: InstalledApp;
   onEdit: () => void;
-  onFixDock: () => void;
   onRemove: () => void;
 }
 
 export function InstalledAppItem({
   app,
   onEdit,
-  onFixDock,
   onRemove,
 }: InstalledAppItemProps) {
   const iconSrc = getAppIconSrc(app.iconPath);
@@ -74,11 +71,6 @@ export function InstalledAppItem({
             Edit
           </Button>
         ) : null}
-        {app.needsDockFix ? (
-          <Button variant="outline" onClick={onFixDock}>
-            Fix dock icon
-          </Button>
-        ) : null}
         <Button variant="destructive" onClick={onRemove}>
           Remove
         </Button>
@@ -89,20 +81,16 @@ export function InstalledAppItem({
 
 interface InstalledAppDialogsProps {
   appToEdit: InstalledApp | null;
-  appToFixDock: InstalledApp | null;
   appToRemove: InstalledApp | null;
   onCloseEdit: () => void;
-  onCloseFixDock: () => void;
   onCloseRemove: () => void;
   onRefresh: () => void;
 }
 
 export function InstalledAppDialogs({
   appToEdit,
-  appToFixDock,
   appToRemove,
   onCloseEdit,
-  onCloseFixDock,
   onCloseRemove,
   onRefresh,
 }: InstalledAppDialogsProps) {
@@ -112,12 +100,6 @@ export function InstalledAppDialogs({
         app={appToEdit}
         onClose={onCloseEdit}
         onSaved={onRefresh}
-      />
-
-      <FixDockDialog
-        app={appToFixDock}
-        onClose={onCloseFixDock}
-        onFixed={onRefresh}
       />
 
       <RemoveAppDialog

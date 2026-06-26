@@ -1,4 +1,3 @@
-mod fix_dock;
 mod install;
 mod list;
 mod parse_name;
@@ -7,7 +6,6 @@ mod remove;
 mod suggest_category;
 mod update;
 
-pub use fix_dock::fix_dock_grouping;
 pub use install::install_appimage;
 pub use list::list_installed_apps;
 pub use parse_name::parse_app_name;

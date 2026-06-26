@@ -1,14 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import {
   InstalledAppDialogs,
   InstalledAppItem,
 } from "@/components/apps/installed-app-item";
+import { AppSearchInput } from "@/components/shared/app-search-input";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { filterAppsByQuery } from "@/lib/filter-apps";
 import { listInstalledApps } from "@/lib/tauri/commands";
 import type { InstalledApp } from "@/lib/tauri/types";
 
@@ -39,9 +41,9 @@ function InstalledAppsListSkeleton() {
 export function InstalledAppsList({ refreshToken }: InstalledAppsListProps) {
   const [apps, setApps] = useState<InstalledApp[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const [appToEdit, setAppToEdit] = useState<InstalledApp | null>(null);
   const [appToRemove, setAppToRemove] = useState<InstalledApp | null>(null);
-  const [appToFixDock, setAppToFixDock] = useState<InstalledApp | null>(null);
 
   const loadApps = useCallback(async () => {
     setIsLoading(true);
@@ -60,6 +62,11 @@ export function InstalledAppsList({ refreshToken }: InstalledAppsListProps) {
   useEffect(() => {
     void loadApps();
   }, [loadApps, refreshToken]);
+
+  const filteredApps = useMemo(
+    () => filterAppsByQuery(apps, query),
+    [apps, query],
+  );
 
   if (isLoading) {
     return <InstalledAppsListSkeleton />;
@@ -81,23 +88,31 @@ export function InstalledAppsList({ refreshToken }: InstalledAppsListProps) {
   return (
     <>
       <div className="flex flex-col gap-4">
-        {apps.map((app) => (
-          <InstalledAppItem
-            key={`${app.slug}-${app.desktopFile}`}
-            app={app}
-            onEdit={() => setAppToEdit(app)}
-            onFixDock={() => setAppToFixDock(app)}
-            onRemove={() => setAppToRemove(app)}
-          />
-        ))}
+        <AppSearchInput value={query} onChange={setQuery} />
+
+        {filteredApps.length === 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>No matches</CardTitle>
+              <CardDescription>Try a different search term.</CardDescription>
+            </CardHeader>
+          </Card>
+        ) : (
+          filteredApps.map((app) => (
+            <InstalledAppItem
+              key={`${app.slug}-${app.desktopFile}`}
+              app={app}
+              onEdit={() => setAppToEdit(app)}
+              onRemove={() => setAppToRemove(app)}
+            />
+          ))
+        )}
       </div>
 
       <InstalledAppDialogs
         appToEdit={appToEdit}
-        appToFixDock={appToFixDock}
         appToRemove={appToRemove}
         onCloseEdit={() => setAppToEdit(null)}
-        onCloseFixDock={() => setAppToFixDock(null)}
         onCloseRemove={() => setAppToRemove(null)}
         onRefresh={() => void loadApps()}
       />

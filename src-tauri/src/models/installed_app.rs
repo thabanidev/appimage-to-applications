@@ -10,10 +10,8 @@ pub struct InstalledApp {
     pub icon_path: String,
     pub version: Option<String>,
     pub app_folder: String,
-  pub desktop_file: String,
-  pub categories: String,
-    pub startup_wm_class: Option<String>,
-    pub needs_dock_fix: bool,
+    pub desktop_file: String,
+    pub categories: String,
     pub managed: bool,
     pub has_desktop_file: bool,
 }

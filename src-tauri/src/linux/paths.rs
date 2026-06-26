@@ -1,7 +1,6 @@
 use std::path::{Path, PathBuf};
 
 const MANAGED_DESKTOP_KEY: &str = "X-AppImage-To-Applications";
-const DOCK_VERIFIED_KEY: &str = "X-AppImage-DockVerified";
 
 pub fn home_dir() -> Result<PathBuf, String> {
     std::env::var("HOME")
@@ -73,10 +72,6 @@ pub fn icon_filename(slug: &str, icon_source: &Path) -> String {
 
 pub fn managed_desktop_key() -> &'static str {
     MANAGED_DESKTOP_KEY
-}
-
-pub fn dock_verified_key() -> &'static str {
-    DOCK_VERIFIED_KEY
 }
 
 fn validate_under_applications(path: &Path) -> Result<(), String> {

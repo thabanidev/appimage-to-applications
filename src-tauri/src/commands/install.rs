@@ -79,7 +79,6 @@ pub fn install_appimage(request: InstallRequest) -> Result<CommandResult, String
             version: version.as_deref(),
             categories: &category,
             startup_wm_class: Some(name),
-            dock_verified: Some(false),
             managed: true,
         },
     )?;

@@ -36,8 +36,6 @@ export interface InstalledApp {
   appFolder: string;
   desktopFile: string;
   categories: string;
-  startupWmClass: string | null;
-  needsDockFix: boolean;
   managed: boolean;
   hasDesktopFile: boolean;
 }

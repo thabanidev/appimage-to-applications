@@ -36,7 +36,6 @@ pub fn update_installed_app(request: UpdateAppRequest) -> Result<CommandResult, 
             version: entry.version.as_deref(),
             categories: &category,
             startup_wm_class: Some(&startup_wm_class),
-            dock_verified: entry.dock_verified,
             managed: entry.managed,
         },
     )?;

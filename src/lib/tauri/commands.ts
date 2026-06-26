@@ -42,10 +42,6 @@ export async function removeInstalledApp(slug: string): Promise<CommandResult> {
   return invoke<CommandResult>("remove_installed_app", { slug });
 }
 
-export async function fixDockGrouping(slug: string): Promise<CommandResult> {
-  return invoke<CommandResult>("fix_dock_grouping", { slug });
-}
-
 export async function updateInstalledApp(
   request: UpdateAppRequest,
 ): Promise<CommandResult> {

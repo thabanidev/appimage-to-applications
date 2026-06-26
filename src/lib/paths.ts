@@ -33,7 +33,6 @@ export function buildInstallPreviewPaths(
       { label: "Copy application", path: appImageFile },
       { label: "Copy icon", path: iconFile },
       { label: "Set menu category", path: category },
-      { label: "Set dock grouping", path: name.trim() },
       { label: "Create desktop launcher", path: desktopFile },
     ],
   };

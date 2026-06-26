@@ -3,7 +3,7 @@ mod linux;
 mod models;
 
 use commands::{
-    fix_dock_grouping, install_appimage, list_installed_apps, parse_app_name, preview_install,
+    install_appimage, list_installed_apps, parse_app_name, preview_install,
     remove_installed_app, suggest_app_category, update_installed_app,
 };
 use tauri::Manager;
@@ -33,7 +33,6 @@ pub fn run() {
             install_appimage,
             list_installed_apps,
             remove_installed_app,
-            fix_dock_grouping,
             update_installed_app,
         ])
         .run(tauri::generate_context!())
