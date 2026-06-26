@@ -64,14 +64,14 @@ Removing an app deletes its folder and its `.desktop` file.
 
 ## Install
 
-Download the latest `.deb` from [Releases](https://github.com/thabanidev/appimage-to-applications/releases).
+Download the latest `.deb` from [Releases](https://github.com/thabanidev/appimage-to-applications/releases/latest).
 
 ```bash
 sudo dpkg -i appimage-to-applications_*.deb
 sudo apt-get install -f   # if anything is missing
 ```
 
-Or build it yourself — see below.
+Or build it yourself — see [Development](#development) below.
 
 ---
 
@@ -105,24 +105,31 @@ npm run tauri dev
 
 ### Ship a release
 
-One command bumps the version, commits, tags, pushes, and triggers GitHub Actions to build and publish the `.deb`:
+Releases are automated. When the code is ready to ship, run one command from the repo root:
 
 ```bash
 npm run release
 ```
 
-That bumps the **patch** version (`0.1.1` → `0.1.2`). For bigger bumps:
+That script:
+
+1. Runs `npm run build` and `cargo test`
+2. Bumps the **patch** version in `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`
+3. Commits, tags (`v0.1.2`, `v0.1.3`, …), and pushes `main` plus the tag
+4. Triggers [`.github/workflows/release.yml`](.github/workflows/release.yml), which builds the `.deb` and publishes the GitHub release
+
+You do **not** need to edit version files, create tags, or upload assets by hand.
+
+For bigger version bumps:
 
 ```bash
 npm run release:minor
 npm run release:major
 ```
 
-You do not need to edit version files or create tags by hand. The workflow runs when the tag is pushed.
+If a release build fails after the tag is already pushed, re-run it from GitHub: **Actions → Release → Run workflow** and enter the tag (for example `v0.1.2`).
 
-To rebuild an existing release from GitHub: **Actions → Release → Run workflow** and enter the tag (for example `v0.1.2`).
-
-### Build the `.deb` locally
+To test a production build without publishing:
 
 ```bash
 npm run build:release

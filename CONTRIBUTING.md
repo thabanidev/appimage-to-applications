@@ -42,6 +42,16 @@ Keep commits small and focused on one logical change.
 3. Ensure the project builds: `npm run build` and `cargo check` in `src-tauri`.
 4. Open a pull request with a description of what changed and why.
 
+## Shipping a release
+
+Only maintainers need this. Do not bump versions or create tags manually.
+
+```bash
+npm run release
+```
+
+See the README **Ship a release** section for the full flow. GitHub Actions publishes the `.deb` when the tag is pushed.
+
 ## Code style
 
 - **Rust:** system logic lives in `src-tauri/src/linux/` and `commands/`; keep Tauri command handlers thin.
