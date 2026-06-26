@@ -51,8 +51,9 @@ pub fn executable_filename(name: &str) -> String {
     crate::linux::install_layout::executable_filename(name)
 }
 
+#[allow(dead_code)]
 pub fn standard_icon_filename() -> &'static str {
-    crate::linux::install_layout::ICON_FILE_NAME
+    "icon.png"
 }
 
 #[allow(dead_code)]

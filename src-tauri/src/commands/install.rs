@@ -4,8 +4,9 @@ use crate::linux::app_version::parse_version_from_path;
 use crate::linux::categories::normalize_category;
 use crate::linux::desktop_entry::{write_desktop_file, DesktopEntryWrite};
 use crate::linux::fs_ops::{chmod_executable, copy_file, ensure_dir, file_exists};
-use crate::linux::install_layout::copy_icon_to_standard_path;
-use crate::linux::paths::{app_folder, desktop_file, executable_filename, slugify, standard_icon_filename};
+use crate::linux::install_layout::copy_icon_to_app_folder;
+use crate::linux::paths::{app_folder, desktop_file, executable_filename, slugify};
+use crate::linux::startup_wm_class::derive_startup_wm_class;
 use crate::linux::refresh::refresh_desktop_database;
 use crate::models::command_result::CommandResult;
 use crate::models::install_request::InstallRequest;
@@ -36,7 +37,6 @@ pub fn install_appimage(request: InstallRequest) -> Result<CommandResult, String
 
     let folder = app_folder(name)?;
     let executable_dest = folder.join(executable_filename(name));
-    let icon_dest = folder.join(standard_icon_filename());
     let desktop_path = desktop_file(&slug)?;
 
     if file_exists(&folder) {
@@ -63,11 +63,17 @@ pub fn install_appimage(request: InstallRequest) -> Result<CommandResult, String
     chmod_executable(&executable_dest).map_err(|e| e.to_string())?;
     log.push("Made application executable".to_string());
 
-    copy_icon_to_standard_path(icon_path, &folder)?;
-    log.push("Copied icon to icon.png".to_string());
+    let icon_dest = copy_icon_to_app_folder(icon_path, &folder)?;
+    log.push(format!(
+        "Copied icon to {}",
+        icon_dest.file_name()
+            .and_then(|file| file.to_str())
+            .unwrap_or("icon")
+    ));
 
     let category = normalize_category(&request.category)?;
     let version = parse_version_from_path(&request.app_image_path);
+    let startup_wm_class = derive_startup_wm_class(name, &executable_dest, app_image_path);
 
     write_desktop_file(
         &desktop_path,
@@ -78,11 +84,14 @@ pub fn install_appimage(request: InstallRequest) -> Result<CommandResult, String
             icon: &icon_dest.to_string_lossy(),
             version: version.as_deref(),
             categories: &category,
-            startup_wm_class: Some(name),
+            startup_wm_class: Some(&startup_wm_class),
             managed: true,
         },
     )?;
     log.push(format!("Created desktop launcher {}", desktop_path.display()));
+    log.push(format!(
+        "Set dock grouping (StartupWMClass) to {startup_wm_class}"
+    ));
 
     refresh_desktop_database();
     log.push("Refreshed applications menu".to_string());

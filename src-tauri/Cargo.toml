@@ -1,6 +1,6 @@
 [package]
 name = "appimage-to-applications"
-version = "0.1.1"
+version = "0.1.2"
 description = "Make AppImages behave like installed desktop applications"
 authors = ["Thabani Takwena"]
 edition = "2021"

@@ -9,3 +9,4 @@ pub mod desktop_scan;
 pub mod fs_ops;
 pub mod paths;
 pub mod refresh;
+pub mod startup_wm_class;

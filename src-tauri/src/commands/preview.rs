@@ -1,9 +1,8 @@
 use std::path::Path;
 
-use crate::linux::install_layout::ICON_FILE_NAME;
-use crate::linux::paths::{
-    app_folder, desktop_file, executable_filename, slugify, standard_icon_filename,
-};
+use crate::linux::install_layout::icon_filename_for_source;
+use crate::linux::paths::{app_folder, desktop_file, executable_filename, slugify};
+use crate::linux::startup_wm_class::preview_startup_wm_class;
 use crate::models::install_preview::{InstallPreview, InstallPreviewStep};
 
 #[tauri::command]
@@ -21,8 +20,14 @@ pub fn preview_install(
 
     let folder = app_folder(&name)?;
     let app_image_file = executable_filename(&name);
-    let icon_file = standard_icon_filename().to_string();
+    let icon_file = icon_filename_for_source(Path::new(&icon_path));
     let desktop = desktop_file(&slug)?;
+    let executable_path = folder.join(&app_image_file);
+    let startup_wm_class = preview_startup_wm_class(
+        name.trim(),
+        &executable_path,
+        Path::new(&app_image_path),
+    );
 
     let steps = vec![
         InstallPreviewStep {
@@ -35,11 +40,11 @@ pub fn preview_install(
         },
         InstallPreviewStep {
             label: "Copy icon".to_string(),
-            path: ICON_FILE_NAME.to_string(),
+            path: icon_file.clone(),
         },
-    InstallPreviewStep {
-            label: "Set StartupWMClass".to_string(),
-            path: name.clone(),
+        InstallPreviewStep {
+            label: "Set dock icon grouping".to_string(),
+            path: startup_wm_class,
         },
         InstallPreviewStep {
             label: "Create desktop launcher".to_string(),
@@ -85,5 +90,20 @@ fn validate_icon_extension(icon_path: &str) -> Result<(), String> {
         Ok(())
     } else {
         Err("Icon must be PNG, SVG, WebP, or JPEG".to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::Path;
+
+    use crate::linux::install_layout::{icon_filename_for_source, ICON_FILE_STEM};
+
+    #[test]
+    fn icon_preview_keeps_source_extension() {
+        assert_eq!(
+            icon_filename_for_source(Path::new("/tmp/godot.svg")),
+            format!("{ICON_FILE_STEM}.svg")
+        );
     }
 }

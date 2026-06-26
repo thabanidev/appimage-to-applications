@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use super::install_layout::ICON_FILE_NAME;
+use super::install_layout::ICON_FILE_STEM;
 
 const IMAGE_EXTENSIONS: &[&str] = &["png", "svg", "webp", "jpg", "jpeg", "ico", "xpm"];
 
@@ -31,17 +31,19 @@ pub fn resolve_icon_path(desktop_icon: &str, app_folder: &str, exec_path: &str) 
 }
 
 fn find_icon_in_folder(folder: &Path, exec_path: &str) -> Option<String> {
-    let standard_icon = folder.join(ICON_FILE_NAME);
-    if let Some(path) = existing_file_path(&standard_icon.to_string_lossy()) {
-        return Some(path);
-    }
-
     let entries = fs::read_dir(folder).ok()?;
     let mut images = Vec::new();
 
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_file() && is_image_file(&path) {
+            if path
+                .file_stem()
+                .and_then(|stem| stem.to_str())
+                .is_some_and(|stem| stem == ICON_FILE_STEM)
+            {
+                return Some(path.to_string_lossy().to_string());
+            }
             images.push(path);
         }
     }

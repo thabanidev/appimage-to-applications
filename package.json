@@ -1,12 +1,15 @@
 {
   "name": "appimage-to-applications",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "build:release": "npm run tauri build",
+    "release": "node scripts/release.mjs",
+    "release:minor": "node scripts/release.mjs minor",
+    "release:major": "node scripts/release.mjs major",
     "preview": "vite preview",
     "tauri": "tauri"
   },

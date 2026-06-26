@@ -22,6 +22,8 @@ I built this app so I do not have to do that manually again — and so other peo
 
 - puts everything in `~/Applications/{AppName}/`
 - creates a `.desktop` launcher in `~/.local/share/applications/`
+- copies your icon into the app folder and points the launcher at it
+- sets `StartupWMClass` so the dock groups with one icon (read from the AppImage when possible)
 - refreshes your applications menu
 
 **Installed tab** — see what you installed here, edit name/description/category, or remove an app completely.
@@ -43,7 +45,7 @@ It does one job: make portable apps behave like normal desktop apps.
 ```
 ~/Applications/Godot/
     Godot
-    icon.png
+    icon.png    # or icon.svg, depending on what you picked
 
 ~/.local/share/applications/godot.desktop
 ```
@@ -101,29 +103,32 @@ npm install
 npm run tauri dev
 ```
 
-### Build the `.deb`
+### Ship a release
+
+One command bumps the version, commits, tags, pushes, and triggers GitHub Actions to build and publish the `.deb`:
+
+```bash
+npm run release
+```
+
+That bumps the **patch** version (`0.1.1` → `0.1.2`). For bigger bumps:
+
+```bash
+npm run release:minor
+npm run release:major
+```
+
+You do not need to edit version files or create tags by hand. The workflow runs when the tag is pushed.
+
+To rebuild an existing release from GitHub: **Actions → Release → Run workflow** and enter the tag (for example `v0.1.2`).
+
+### Build the `.deb` locally
 
 ```bash
 npm run build:release
 ```
 
 Output: `src-tauri/target/release/bundle/deb/`
-
-### Publish a GitHub release
-
-1. Bump the version in `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json` so they all match.
-2. Commit and push to `main`.
-3. Tag the release and push the tag:
-
-```bash
-git tag v0.1.1
-git push origin main
-git push origin v0.1.1
-```
-
-GitHub Actions builds the `.deb` and attaches it to the release automatically when the tag is pushed.
-
-To build locally without publishing, run `npm run build:release` and install the `.deb` from the output folder above.
 
 ---
 

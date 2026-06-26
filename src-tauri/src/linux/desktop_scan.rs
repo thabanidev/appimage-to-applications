@@ -8,7 +8,7 @@ use super::applications::is_under_applications;
 use super::app_version::resolve_app_version;
 use super::desktop_entry::parse_desktop_file;
 use super::icon_path::resolve_icon_path;
-use super::install_layout::ICON_FILE_NAME;
+use super::install_layout::ICON_FILE_STEM;
 use super::paths::{applications_root, desktop_dir, slugify};
 
 pub fn scan_installed_apps() -> Result<Vec<InstalledApp>, String> {
@@ -164,8 +164,11 @@ fn find_executable_in_folder(folder: &Path) -> Option<PathBuf> {
             return Some(path);
         }
 
-        let file_name = path.file_name()?.to_str()?;
-        if file_name == ICON_FILE_NAME {
+        if path
+            .file_stem()
+            .and_then(|stem| stem.to_str())
+            .is_some_and(|stem| stem == ICON_FILE_STEM)
+        {
             continue;
         }
 

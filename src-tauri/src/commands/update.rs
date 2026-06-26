@@ -2,8 +2,10 @@ use crate::linux::categories::normalize_category;
 use crate::linux::desktop_entry::{parse_desktop_file, write_desktop_file, DesktopEntryWrite};
 use crate::linux::desktop_scan::find_desktop_file;
 use crate::linux::refresh::refresh_desktop_database;
+use crate::linux::startup_wm_class::derive_startup_wm_class;
 use crate::models::command_result::CommandResult;
 use crate::models::update_app_request::UpdateAppRequest;
+use std::path::Path;
 
 #[tauri::command]
 pub fn update_installed_app(request: UpdateAppRequest) -> Result<CommandResult, String> {
@@ -21,10 +23,11 @@ pub fn update_installed_app(request: UpdateAppRequest) -> Result<CommandResult, 
     let entry = parse_desktop_file(&desktop_path)?;
     let category = normalize_category(&request.category)?;
 
-    let startup_wm_class = entry
-        .startup_wm_class
-        .clone()
-        .unwrap_or_else(|| name.to_string());
+    let startup_wm_class = derive_startup_wm_class(
+        name,
+        Path::new(&entry.exec),
+        Path::new(&entry.exec),
+    );
 
     write_desktop_file(
         &desktop_path,
