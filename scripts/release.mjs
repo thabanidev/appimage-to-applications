@@ -73,6 +73,9 @@ console.log(`Checking build before ${currentVersion} -> ${nextVersion} (${tag}).
 run("npm run build");
 run("cargo test", { cwd: "src-tauri" });
 
+console.log(`Preparing CHANGELOG.md for ${nextVersion}...`);
+run(`node scripts/update-changelog.mjs ${nextVersion}`);
+
 console.log(`Setting version to ${nextVersion}...`);
 setVersion(nextVersion);
 run("cargo check", { cwd: "src-tauri" });

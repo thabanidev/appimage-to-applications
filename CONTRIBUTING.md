@@ -46,11 +46,14 @@ Keep commits small and focused on one logical change.
 
 Only maintainers need this. Do not bump versions or create tags manually.
 
+1. Write release notes under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
+2. Run:
+
 ```bash
 npm run release
 ```
 
-See the README **Ship a release** section for the full flow. GitHub Actions publishes the `.deb` when the tag is pushed.
+GitHub Actions builds the `.deb` and publishes the release using the matching `CHANGELOG.md` section. See the README **Ship a release** section for details.
 
 ## Code style
 

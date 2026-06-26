@@ -61,10 +61,14 @@ jobs:
       - name: Build .deb
         run: npm run build:release
 
+      - name: Write release notes
+        run: node scripts/format-release-notes.mjs ${{ steps.release.outputs.tag }} > release-notes.md
+
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.release.outputs.tag }}
-          generate_release_notes: ${{ github.event_name != 'workflow_dispatch' }}
+          name: ${{ steps.release.outputs.tag }} — AppImage to Applications
+          body_path: release-notes.md
           files: |
             src-tauri/target/release/bundle/deb/*.deb

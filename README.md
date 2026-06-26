@@ -105,7 +105,10 @@ npm run tauri dev
 
 ### Ship a release
 
-Releases are automated. When the code is ready to ship, run one command from the repo root:
+Releases are automated, but each release needs notes in `CHANGELOG.md` first.
+
+1. Add bullets under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md) (Added, Changed, Fixed, Removed).
+2. Run:
 
 ```bash
 npm run release
@@ -114,11 +117,12 @@ npm run release
 That script:
 
 1. Runs `npm run build` and `cargo test`
-2. Bumps the **patch** version in `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`
-3. Commits, tags (`v0.1.2`, `v0.1.3`, …), and pushes `main` plus the tag
-4. Triggers [`.github/workflows/release.yml`](.github/workflows/release.yml), which builds the `.deb` and publishes the GitHub release
+2. Moves `[Unreleased]` into a dated `[X.Y.Z]` section in `CHANGELOG.md`
+3. Bumps the version in `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`
+4. Commits, tags (`v0.1.2`, `v0.1.3`, …), and pushes `main` plus the tag
+5. Triggers [`.github/workflows/release.yml`](.github/workflows/release.yml), which builds the `.deb` and publishes a GitHub release with a proper description from `CHANGELOG.md`
 
-You do **not** need to edit version files, create tags, or upload assets by hand.
+You do **not** need to create tags or upload assets by hand.
 
 For bigger version bumps:
 
@@ -128,6 +132,12 @@ npm run release:major
 ```
 
 If a release build fails after the tag is already pushed, re-run it from GitHub: **Actions → Release → Run workflow** and enter the tag (for example `v0.1.2`).
+
+To preview release notes locally:
+
+```bash
+node scripts/format-release-notes.mjs v0.1.2
+```
 
 To test a production build without publishing:
 
