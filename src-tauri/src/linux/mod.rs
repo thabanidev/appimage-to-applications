@@ -1,0 +1,12 @@
+pub mod icon_path;
+pub mod install_layout;
+pub mod applications;
+pub mod app_name;
+pub mod app_version;
+pub mod categories;
+pub mod desktop_entry;
+pub mod desktop_scan;
+pub mod fs_ops;
+pub mod paths;
+pub mod refresh;
+pub mod wm_class;

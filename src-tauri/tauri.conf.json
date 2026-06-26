@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "AppImage to Applications",
+  "version": "0.1.0",
+  "identifier": "dev.thabani.appimage-to-applications",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "AppImage to Applications",
+        "width": 900,
+        "height": 700
+      }
+    ],
+    "security": {
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$HOME/Applications/**"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb"],
+    "shortDescription": "Make AppImages behave like installed desktop apps",
+    "longDescription": "AppImage to Applications is a Linux desktop utility that copies AppImages into ~/Applications, creates desktop launchers, and makes portable apps feel installed.",
+    "icon": [
+      "icons/icon.png",
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "linux": {
+      "deb": {
+        "depends": [
+          "desktop-file-utils",
+          "xdotool",
+          "x11-utils",
+          "wmctrl"
+        ]
+      }
+    }
+  }
+}

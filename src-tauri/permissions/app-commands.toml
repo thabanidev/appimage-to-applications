@@ -1,0 +1,12 @@
+[[permission]]
+identifier = "app-commands"
+description = "AppImage install, list, remove, and preview commands"
+commands.allow = [
+  "parse_app_name",
+  "preview_install",
+  "install_appimage",
+  "list_installed_apps",
+  "remove_installed_app",
+  "fix_dock_grouping",
+  "update_installed_app",
+]
